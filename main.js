@@ -1,5 +1,5 @@
-const numPoints = 80;
-const numFollowing = 3;
+const numPoints = 20;
+const numFollowing = 1;
 const radiusFactor = 6;
 const minRadius = 2;
 const velFactor = 0.4;
@@ -24,8 +24,14 @@ function start() {
 	for (let i = 0; i < numPoints; i++) {
 		points.push({
 			pos: {
-				x: Math.floor(Math.random() * canvas.width),
-				y: Math.floor(Math.random() * canvas.height),
+				// x: Math.floor(Math.random() * canvas.width),
+				// y: Math.floor(Math.random() * canvas.height),
+				x:
+					canvas.width / 2 +
+					(canvas.width / 6) * Math.cos((i * 2 * Math.PI) / numPoints),
+				y:
+					canvas.height / 2 +
+					(canvas.width / 6) * Math.sin((i * 2 * Math.PI) / numPoints),
 			},
 			vel: {
 				x: 0,
@@ -37,6 +43,7 @@ function start() {
 			radius: 0,
 		});
 	}
+	console.log(points);
 	for (const p of points) {
 		for (let i = 0; i < numFollowing; i++) {
 			let f;
