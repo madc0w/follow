@@ -1,7 +1,9 @@
 const numPoints = 80;
 const numFollowing = 3;
 const radiusFactor = 6;
+const minRadius = 2;
 const velFactor = 0.4;
+const velColorFactor = 2;
 let canvas, ctx, points, t;
 
 function load() {
@@ -30,7 +32,7 @@ function start() {
 				y: 0,
 			},
 			following: [],
-			color: hsvToRgb(Math.random(), 0.8, 1),
+			// color: hsvToRgb(Math.random(), 0.2 + 0.4 * Math.random(), 1),
 			radiusFreq: 0.1 * (Math.random() + 0.8),
 			radius: 0,
 		});
@@ -68,24 +70,31 @@ function step() {
 			p.vel.y *= -1;
 		}
 
-		p.radius = radiusFactor * (1 + Math.sin(t * p.radiusFreq));
+		p.radius = minRadius + radiusFactor * (1 + Math.sin(t * p.radiusFreq));
 	}
 	t++;
 }
 
 function draw() {
 	step();
-	ctx.strokeStyle = '#ffc';
+	ctx.strokeStyle = '#000';
 	for (const p of points) {
-		ctx.fillStyle = p.color;
+		const vel = Math.sqrt(p.vel.x ** 2 + p.vel.y ** 2);
+		const h = sigmoid(vel * velColorFactor);
+		// console.log(h);
+		ctx.fillStyle = hsvToRgb(h, 0.4, 1);
 		ctx.beginPath();
 		ctx.arc(p.pos.x, p.pos.y, p.radius, 0, 2 * Math.PI);
 		ctx.fill();
 
 		ctx.beginPath();
-		ctx.moveTo(p.pos.x, p.pos.y);
-		ctx.lineTo(p.pos.x + 80 * p.vel.x, p.pos.y + 80 * p.vel.y);
+		ctx.arc(p.pos.x, p.pos.y, p.radius, 0, 2 * Math.PI);
 		ctx.stroke();
+
+		// ctx.beginPath();
+		// ctx.moveTo(p.pos.x, p.pos.y);
+		// ctx.lineTo(p.pos.x + 80 * p.vel.x, p.pos.y + 80 * p.vel.y);
+		// ctx.stroke();
 	}
 
 	requestAnimationFrame(draw);
@@ -130,4 +139,8 @@ function hsvToRgb(h, s, v) {
 	return `#${toHex(Math.round(r * 255))}${toHex(Math.round(g * 255))}${toHex(
 		Math.round(b * 255)
 	)}`;
+}
+
+function sigmoid(x) {
+	return 2 / (1 + Math.exp(-x)) - 1;
 }
