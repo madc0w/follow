@@ -17,7 +17,7 @@ function load() {
 }
 
 function start() {
-	ctx.fillStyle = '#020';
+	ctx.fillStyle = '#040';
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	t = 0;
 	points = [];
@@ -43,16 +43,33 @@ function start() {
 			radius: 0,
 		});
 	}
-	console.log(points);
+
+	let j = 0;
 	for (const p of points) {
-		for (let i = 0; i < numFollowing; i++) {
-			let f;
-			do {
-				f = points[Math.floor(Math.random() * points.length)];
-			} while (f == p);
-			p.following.push(f);
-		}
+		const f1 = points[(j + points.length - 1) % points.length];
+		p.following.push(f1);
+		const f2 = points[(j + points.length - 2) % points.length];
+		p.following.push(f2);
+
+		// for (let i = 0; i < numFollowing; i++) {
+		// let f;
+		// do {
+		// 	f = points[Math.floor(Math.random() * points.length)];
+		// } while (f == p);
+		// }
+		j++;
 	}
+
+	for (let i = 0; i < numPoints / 2; i++) {
+		const p = points[Math.floor(Math.random() * points.length)];
+		let f;
+		do {
+			f = points[Math.floor(Math.random() * points.length)];
+		} while (f == p);
+		p.following.push(f);
+	}
+
+	console.log(points);
 }
 
 function step() {
